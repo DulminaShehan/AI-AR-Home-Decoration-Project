@@ -4,6 +4,12 @@ import 'package:flutter/material.dart';
 import '../data/dummy_data.dart';
 import '../theme/app_theme.dart';
 import '../widgets/room_card.dart';
+import 'ai_chat_screen.dart';
+import 'budget_planner_screen.dart';
+import 'cart_screen.dart';
+import 'favorites_screen.dart';
+import 'furniture_screen.dart';
+import 'room_design_screen.dart';
 import 'room_detail_screen.dart';
 
 /// Premium Home Screen — glassmorphism header + staggered room grid.
@@ -19,9 +25,17 @@ class _HomeScreenState extends State<HomeScreen>
   late final AnimationController _fadeCtrl;
   late final Animation<double> _fade;
   int _selectedCategory = 0;
+  int _selectedStyle = 0;
 
   static const List<String> _categories = [
     'All', 'Living', 'Bedroom', 'Kitchen', 'Office',
+  ];
+
+  static const List<(IconData, String, Color)> _styles = [
+    (Icons.auto_awesome_rounded,      'Modern',        AppTheme.violet),
+    (Icons.spa_outlined,              'Minimal',        AppTheme.cyan),
+    (Icons.diamond_outlined,          'Luxury',         AppTheme.amber),
+    (Icons.forest_outlined,           'Scandinavian',   AppTheme.teal),
   ];
 
   @override
@@ -87,6 +101,20 @@ class _HomeScreenState extends State<HomeScreen>
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 22),
                     child: _HeroBanner(),
+                  ),
+                ),
+
+                const SliverToBoxAdapter(child: SizedBox(height: 22)),
+
+                // ── Style selector ───────────────────────────────────
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 22),
+                    child: _StyleSelector(
+                      styles: _styles,
+                      selected: _selectedStyle,
+                      onSelect: (i) => setState(() => _selectedStyle = i),
+                    ),
                   ),
                 ),
 
@@ -344,7 +372,20 @@ class _HeroBanner extends StatelessWidget {
                 const SizedBox(height: 16),
                 // CTA
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () => Navigator.of(context).push(
+                    PageRouteBuilder(
+                      transitionDuration:
+                          const Duration(milliseconds: 380),
+                      pageBuilder: (_, __, ___) =>
+                          const AiChatScreen(),
+                      transitionsBuilder: (_, anim, __, child) =>
+                          FadeTransition(
+                        opacity: CurvedAnimation(
+                            parent: anim, curve: Curves.easeOut),
+                        child: child,
+                      ),
+                    ),
+                  ),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 18, vertical: 10),
@@ -408,20 +449,34 @@ class _StatsRow extends StatelessWidget {
             icon: Icons.home_work_outlined,
             value: '${DummyData.rooms.length}',
             label: 'Rooms',
-            gradient: AppTheme.heroGradient),
-        const SizedBox(width: 12),
-        const _StatCard(
+            gradient: AppTheme.heroGradient,
+            onTap: null),
+        const SizedBox(width: 10),
+        _StatCard(
             icon: Icons.chair_outlined,
-            value: '24',
+            value: '${DummyData.allFurniture.length}',
             label: 'Furniture',
-            gradient: AppTheme.cyanGradient),
-        const SizedBox(width: 12),
-        const _StatCard(
-            icon: Icons.auto_awesome_rounded,
-            value: '18',
-            label: 'AI Tips',
-            gradient: LinearGradient(
-                colors: [AppTheme.teal, Color(0xFF059669)])),
+            gradient: AppTheme.cyanGradient,
+            onTap: () => Navigator.of(context).push(PageRouteBuilder(
+              transitionDuration: const Duration(milliseconds: 380),
+              pageBuilder: (_, __, ___) => const FurnitureScreen(),
+              transitionsBuilder: (_, anim, __, child) =>
+                  FadeTransition(opacity: anim, child: child),
+            ))),
+        const SizedBox(width: 10),
+        _StatCard(
+            icon: Icons.savings_outlined,
+            value: 'Plan',
+            label: 'Budget',
+            gradient: const LinearGradient(
+                colors: [AppTheme.teal, Color(0xFF059669)]),
+            onTap: () => Navigator.of(context).push(PageRouteBuilder(
+              transitionDuration: const Duration(milliseconds: 380),
+              pageBuilder: (_, __, ___) =>
+                  const BudgetPlannerScreen(),
+              transitionsBuilder: (_, anim, __, child) =>
+                  FadeTransition(opacity: anim, child: child),
+            ))),
       ],
     );
   }
@@ -432,16 +487,20 @@ class _StatCard extends StatelessWidget {
   final String value;
   final String label;
   final LinearGradient gradient;
+  final VoidCallback? onTap;
   const _StatCard(
       {required this.icon,
       required this.value,
       required this.label,
-      required this.gradient});
+      required this.gradient,
+      this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Container(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 12),
         decoration: BoxDecoration(
           color: AppTheme.bg2,
@@ -474,6 +533,7 @@ class _StatCard extends StatelessWidget {
                 )),
           ],
         ),
+      ),
       ),
     );
   }
@@ -566,6 +626,66 @@ class _GhostChip extends StatelessWidget {
   }
 }
 
+// ── Style Selector ────────────────────────────────────────────────────────────
+
+class _StyleSelector extends StatelessWidget {
+  final List<(IconData, String, Color)> styles;
+  final int selected;
+  final ValueChanged<int> onSelect;
+  const _StyleSelector(
+      {required this.styles,
+      required this.selected,
+      required this.onSelect});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: List.generate(styles.length, (i) {
+        final s = styles[i];
+        final active = i == selected;
+        return Expanded(
+          child: GestureDetector(
+            onTap: () => onSelect(i),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+              margin: EdgeInsets.only(right: i < styles.length - 1 ? 8 : 0),
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                color: active
+                    ? s.$3.withValues(alpha: 0.15)
+                    : AppTheme.bg2,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: active
+                      ? s.$3.withValues(alpha: 0.5)
+                      : AppTheme.glassBorder,
+                  width: active ? 1.5 : 1,
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(s.$1,
+                      size: 18,
+                      color: active ? s.$3 : AppTheme.textLow),
+                  const SizedBox(height: 4),
+                  Text(s.$2,
+                      style: TextStyle(
+                        color: active ? s.$3 : AppTheme.textLow,
+                        fontSize: 10,
+                        fontWeight:
+                            active ? FontWeight.w700 : FontWeight.w400,
+                      )),
+                ],
+              ),
+            ),
+          ),
+        );
+      }),
+    );
+  }
+}
+
 // ── Bottom Nav ────────────────────────────────────────────────────────────────
 
 class _BottomNav extends StatefulWidget {
@@ -575,13 +695,55 @@ class _BottomNav extends StatefulWidget {
 
 class _BottomNavState extends State<_BottomNav> {
   int _current = 0;
+
   static const _items = [
-    (Icons.home_rounded, 'Home'),
-    (Icons.explore_outlined, 'Explore'),
-    (Icons.view_in_ar_rounded, 'AR'),
-    (Icons.bookmark_border_rounded, 'Saved'),
-    (Icons.person_outline_rounded, 'Profile'),
+    (Icons.home_rounded,             'Home'),
+    (Icons.chair_outlined,           'Furniture'),
+    (Icons.view_in_ar_rounded,       'Design'),
+    (Icons.favorite_border_rounded,  'Favorites'),
+    (Icons.shopping_bag_outlined,    'Cart'),
   ];
+
+  void _onTap(int i, BuildContext ctx) {
+    if (i == _current && i == 0) return;
+    setState(() => _current = i);
+    switch (i) {
+      case 1:
+        Navigator.of(ctx)
+            .push(_slide(const FurnitureScreen()))
+            .then((_) => setState(() => _current = 0));
+      case 2:
+        Navigator.of(ctx)
+            .push(_slide(RoomDesignScreen(room: DummyData.rooms.first)))
+            .then((_) => setState(() => _current = 0));
+      case 3:
+        Navigator.of(ctx)
+            .push(_slide(const FavoritesScreen()))
+            .then((_) => setState(() => _current = 0));
+      case 4:
+        Navigator.of(ctx)
+            .push(_slide(const CartScreen()))
+            .then((_) => setState(() => _current = 0));
+      default:
+        break;
+    }
+  }
+
+  PageRouteBuilder<void> _slide(Widget page) => PageRouteBuilder(
+        transitionDuration: const Duration(milliseconds: 380),
+        pageBuilder: (_, __, ___) => page,
+        transitionsBuilder: (_, anim, __, child) => FadeTransition(
+          opacity: CurvedAnimation(parent: anim, curve: Curves.easeOut),
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(0, 0.04),
+              end: Offset.zero,
+            ).animate(
+                CurvedAnimation(parent: anim, curve: Curves.easeOutCubic)),
+            child: child,
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -589,9 +751,9 @@ class _BottomNavState extends State<_BottomNav> {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
         child: Container(
-          decoration: BoxDecoration(
-            color: AppTheme.bg0.withValues(alpha: 0.85),
-            border: const Border(
+          decoration: const BoxDecoration(
+            color: Color(0xD9070B14),
+            border: Border(
                 top: BorderSide(color: AppTheme.glassBorder, width: 1)),
           ),
           padding: EdgeInsets.only(
@@ -604,7 +766,7 @@ class _BottomNavState extends State<_BottomNav> {
               final active = i == _current;
               final item = _items[i];
               return GestureDetector(
-                onTap: () => setState(() => _current = i),
+                onTap: () => _onTap(i, context),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   padding: const EdgeInsets.symmetric(

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import '../data/dummy_data.dart';
-import '../models/furniture.dart';
 import '../models/room.dart';
 import '../theme/app_theme.dart';
 
@@ -263,7 +262,7 @@ class _RoomDesignScreenState extends State<RoomDesignScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // ── Lighting ──────────────────────────────────────
-                  _SectionLabel(
+                  const _SectionLabel(
                       icon: Icons.light_mode_rounded, label: 'Lighting'),
                   const SizedBox(height: 8),
                   Container(
@@ -321,7 +320,7 @@ class _RoomDesignScreenState extends State<RoomDesignScreen>
                   const SizedBox(height: 14),
 
                   // ── Wall colour ───────────────────────────────────
-                  _SectionLabel(
+                  const _SectionLabel(
                       icon: Icons.format_paint_rounded,
                       label: 'Wall Colour'),
                   const SizedBox(height: 8),
@@ -371,7 +370,7 @@ class _RoomDesignScreenState extends State<RoomDesignScreen>
                   const SizedBox(height: 14),
 
                   // ── Add furniture ─────────────────────────────────
-                  _SectionLabel(
+                  const _SectionLabel(
                       icon: Icons.add_circle_outline_rounded,
                       label: 'Add Furniture'),
                   const SizedBox(height: 8),
@@ -422,7 +421,7 @@ class _RoomDesignScreenState extends State<RoomDesignScreen>
 
                   // ── Room furniture carousel ───────────────────────
                   if (furniture.isNotEmpty) ...[
-                    _SectionLabel(
+                    const _SectionLabel(
                         icon: Icons.auto_awesome_outlined,
                         label: 'Recommended'),
                     const SizedBox(height: 8),

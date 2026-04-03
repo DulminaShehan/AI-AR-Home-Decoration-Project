@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.example.smart_home_designer"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // ndkVersion = flutter.ndkVersion  // bypassed: local NDK copy is corrupted
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
