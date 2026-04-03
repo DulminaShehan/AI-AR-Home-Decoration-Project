@@ -1,0 +1,27 @@
+name: smart_home_designer
+description: AI + AR Smart Home Decoration Assistant — a Flutter UI app.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # Smooth page-level transitions
+  animations: ^2.0.11
+  # Cached network images for performance
+  cached_network_image: ^3.3.1
+  # Modern shimmer loading effect
+  shimmer: ^3.0.0
+  # Google Fonts for clean typography
+  google_fonts: ^6.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true

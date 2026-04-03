@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter pub:*)",
+      "Bash(flutter analyze:*)",
+      "Bash(node -e ':*)",
+      "Bash(flutter create:*)",
+      "Bash(dart fix:*)",
+      "Bash(flutter devices:*)",
+      "Bash(flutter run:*)",
+      "Bash(start ms-settings:developers)",
+      "Bash(flutter doctor:*)"
+    ],
+    "additionalDirectories": [
+      "d:\\AI + AR Home Decoration Project\\lib"
+    ]
+  }
+}
