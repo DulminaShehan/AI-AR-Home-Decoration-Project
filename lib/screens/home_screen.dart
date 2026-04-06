@@ -5,11 +5,11 @@ import '../data/dummy_data.dart';
 import '../theme/app_theme.dart';
 import '../widgets/room_card.dart';
 import 'ai_chat_screen.dart';
+import 'ar_camera_screen.dart';
 import 'budget_planner_screen.dart';
 import 'cart_screen.dart';
 import 'favorites_screen.dart';
 import 'furniture_screen.dart';
-import 'room_design_screen.dart';
 import 'room_detail_screen.dart';
 
 /// Premium Home Screen — glassmorphism header + staggered room grid.
@@ -699,7 +699,7 @@ class _BottomNavState extends State<_BottomNav> {
   static const _items = [
     (Icons.home_rounded,             'Home'),
     (Icons.chair_outlined,           'Furniture'),
-    (Icons.view_in_ar_rounded,       'Design'),
+    (Icons.view_in_ar_rounded,       'AR'),
     (Icons.favorite_border_rounded,  'Favorites'),
     (Icons.shopping_bag_outlined,    'Cart'),
   ];
@@ -714,7 +714,7 @@ class _BottomNavState extends State<_BottomNav> {
             .then((_) => setState(() => _current = 0));
       case 2:
         Navigator.of(ctx)
-            .push(_slide(RoomDesignScreen(room: DummyData.rooms.first)))
+            .push(_slide(const ARRoomEntry()))
             .then((_) => setState(() => _current = 0));
       case 3:
         Navigator.of(ctx)

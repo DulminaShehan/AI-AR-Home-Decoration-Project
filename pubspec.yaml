@@ -17,6 +17,8 @@ dependencies:
   shimmer: ^3.0.0
   # Google Fonts for clean typography
   google_fonts: ^6.2.1
+  # Camera access for live AR preview
+  camera: ^0.11.0
 
 dev_dependencies:
   flutter_test:
